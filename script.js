@@ -1,8 +1,5 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-
-// Your web app's Firebase configuration
+// Firebase SDKs import via CDN
+// Firebase App (the core Firebase SDK) is always required and must be listed first
 const firebaseConfig = {
   apiKey: "AIzaSyDkpi3eZF5MegPxJLboIXjz9ZmbQheQuDE",
   authDomain: "shepry-474d7.firebaseapp.com",
@@ -14,8 +11,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 document.addEventListener('DOMContentLoaded', function() {
     const teamsList = document.getElementById('teams-list');
@@ -39,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     teamsList.innerHTML = `<ul>${teams.map(team => `<li>${team}</li>`).join('')}</ul>`;
 
     // Authentication state listener
-    onAuthStateChanged(auth, (user) => {
+    firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             // User is signed in
             userEmail.textContent = user.email;
@@ -56,24 +53,20 @@ document.addEventListener('DOMContentLoaded', function() {
     loginButton.addEventListener('click', () => {
         const email = loginEmail.value;
         const password = loginPassword.value;
-        signInWithEmailAndPassword(auth, email, password)
+        firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 // Signed in
                 console.log('User signed in:', userCredential.user);
             })
             .catch((error) => {
                 console.error('Error signing in:', error);
+                alert('Login failed: ' + error.message);
             });
     });
 
     // Logout
     logoutButton.addEventListener('click', () => {
-        signOut(auth)
+        firebase.auth().signOut()
             .then(() => {
                 console.log('User signed out');
-            })
-            .catch((error) => {
-                console.error('Error signing out:', error);
-            });
-    });
-});
+         
